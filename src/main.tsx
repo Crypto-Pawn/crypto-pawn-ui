@@ -5,8 +5,8 @@ import './index.css';
 import { App } from './App';
 import { QueryClientProvider } from '@tanstack/react-query';
 import {StoreProvider} from "./store";
-import {ToastProvider} from "./components/ui/Toast.tsx";
 import {queryClient} from "./libs/query.ts";
+import {ToastProvider} from "@/components/ui/Toast";
 
 scan({ enabled: false });
 
