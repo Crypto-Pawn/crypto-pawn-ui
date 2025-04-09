@@ -1,52 +1,58 @@
 import { FC } from "react";
 import { Search } from "lucide-react";
-import { Input } from "./ui/Input";
 import { cn } from "@/libs/style";
-import {Button} from "@/components/ui/Button.tsx";
+import { Button } from "./ui/Button";
+import { Input } from "@/components/ui/Input.tsx";
 
 export const Header: FC = () => {
   return (
-    <header className={cn("bg-black border-zinc-800 py-4")}>
-      <div className={cn("max-w-screen-xl mx-auto grid grid-cols-3 items-center px-6 font-Arimo")}>
-        {/* Left: Logo + Name */}
-        <div className="flex items-center gap-2">
-          <img src="/cryptoPawn.png" alt="Crypto Pawn" className="h-6" />
-          <span className="text-lg font-bold tracking-wide">CRYPTO PAWN</span>
+    <header className={cn("bg-black text-white border-b border-zinc-800 py-5")}>
+      <div className={cn("max-w-screen-xl mx-auto grid grid-cols-5 items-center px-6 font-Arimo gap-4")}>
+
+        {/* Column 1: Logo + Brand */}
+        <div className="flex items-center gap-3 col-span-1">
+          <img src="/src/assets/images/cryptoPawn.png" alt="Crypto Pawn" className="h-7 w-auto" />
+          <span className="text-xl font-bold tracking-wide">CRYPTO PAWN</span>
         </div>
 
-        {/* Middle: Navigation */}
-        <nav className="flex justify-center gap-4">
-          <button
+        {/* Column 2 + 3: Navigation (centered in grid) */}
+        <div className="col-span-2 flex justify-center gap-6">
+          <Button
+            variant="ghost"
             className={cn(
-              "px-4 py-1 text-sm font-medium rounded-full transition-all",
-              "text-zinc-400 hover:text-purple-600 hover:bg-zinc-800"
+              "px-5 py-2 text-base",
+              "text-zinc-400 hover:text-purple-600"
             )}
           >
             EXPLORE
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="ghost"
             className={cn(
-              "px-4 py-1 text-sm font-medium rounded-full transition-all",
-              "text-zinc-400 hover:text-purple-600 hover:bg-zinc-800"
+              "px-5 py-2 text-base",
+              "text-zinc-400 hover:text-purple-600"
             )}
           >
             PROFILE
-          </button>
-        </nav>
+          </Button>
+        </div>
 
-        {/* Right: Search + Wallet */}
-        <div className="flex justify-end gap-2 items-center">
+        {/* Column 4 + 5: Search + Wallet */}
+        <div className="col-span-2 flex justify-end items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
             <Input
-              placeholder="Search..."
+              placeholder="Search Transaction ID"
               className={cn(
-                "pl-9 pr-4 py-2 rounded-full border border-zinc-700",
-                "bg-black text-white placeholder:text-zinc-400 w-[180px] sm:w-[200px]"
+                "pl-12 pr-5 py-5 rounded-full border border-zinc-700",
+                "bg-black text-white placeholder:text-zinc-400",
+                "w-[220px] sm:w-[260px] text-base"
               )}
             />
           </div>
-          <Button variant="pink" size="sm">Connect Wallet</Button>
+          <Button variant="purple" size="lg" className={cn(
+            "px-5 py-2 text-base",
+            "hover:text-purple-600")}>Connect Wallet</Button>
         </div>
       </div>
     </header>

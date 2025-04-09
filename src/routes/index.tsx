@@ -1,9 +1,12 @@
+import { Feature } from '@/components/Feature'
+import { Hero } from '@/components/Hero'
 import { createFileRoute } from '@tanstack/react-router'
 
 function Index() {
   return (
     <div className="p-2">
-      <h3>Welcome Home!</h3>
+      <Hero />
+      <Feature />
     </div>
   )
 }

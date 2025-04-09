@@ -9,7 +9,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-[hsl(var(--orange-normal))] text-white hover:bg-[hsl(var(--orange-normal-hover))]',
-        pink: 'bg-gradient-to-r from-[#C084FC] to-[#EC4899] text-white hover:brightness-95',
+        purple: 'bg-[#a78bfa] hover:bg-[hsl(var(--accent))] text-white',
         ghost: 'bg-transparent hover:bg-[hsl(var(--accent))] text-[hsl(var(--foreground))]',
         outline: 'border border-[hsl(var(--border))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--black-11))]',
         secondary: 'bg-[hsl(var(--black-10))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--black-9))]',
