@@ -1,3 +1,153 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* === Base layer (color system + dark mode) === */
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
+        --card-foreground: 222.2 84% 4.9%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary-foreground: 0 0% 0%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+        --destructive: 0 100% 50%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 215 20.2% 65.1%;
+        --radius: 0.5rem;
+
+        /* Custom dark-neutral scale */
+        --black-1: 0 0% 100%;
+        --black-2: 0 0% 99%;
+        --black-5: 0 0% 85%;
+        --black-6: 0 0% 75%;
+        --black-7: 0 0% 55%;
+        --black-8: 0 0% 35%;
+        --black-9: 0 0% 27%;
+        --black-10: 0 0% 15%;
+        --black-11: 0 0% 12%;
+        --black-12: 0 0% 8%;
+        --black-13: 0 0% 0;
+
+        /* Orange palette */
+        --orange: 42 100% 96%;
+        --orange-hover: 43 100% 94%;
+        --orange-active: 42 100% 87%;
+        --orange-normal: 43 99% 60%;
+        --orange-normal-hover: 43 78% 54%;
+        --orange-normal-active: 43 67% 48%;
+        --orange-white-hover: 42 100% 98%;
+        --orange-white-active: 42 100% 94%;
+
+        /* Green palette */
+        --green: 162 42% 94%;
+        --green-hover: 161 40% 91%;
+        --green-active: 161 40% 81%;
+        --green-normal: 161 62% 39%;
+        --green-normal-hover: 162 62% 35%;
+        --green-normal-active: 161 62% 31%;
+        --green-light: 101 71% 75%;
+
+        --red: 0 78% 47%;
+        --blue: 209 82% 45%;
+    }
+
+    .dark {
+        --background: 222.2 84% 4.9%;
+        --foreground: 213 31% 91%;
+        --card-foreground: 213 31% 91%;
+        --popover-foreground: 215 20.2% 65.1%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+        --secondary-foreground: 210 40% 98%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 212.7 26.8% 83.9%;
+
+        --black-3: 0 0% 96%;
+        --black-4: 0 0% 94%;
+        --black-5: 0 0% 85%;
+        --black-6: 0 0% 75%;
+        --black-7: 0 0% 55%;
+        --black-8: 0 0% 35%;
+        --black-9: 0 0% 27%;
+        --black-10: 0 0% 15%;
+        --black-11: 0 0% 12%;
+        --black-12: 0 0% 8%;
+        --black-13: 0 0% 0;
+    }
+
+    * {
+        border-color: hsl(var(--border));
+    }
+
+    body {
+        @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+        font-family: 'Arimo', Roboto, sans-serif;
+    }
+}
+
+@layer components {
+    .headline-large {
+        @apply font-bold text-[32px] leading-10;
+    }
+    .headline-medium {
+        @apply font-semibold text-[28px] leading-9;
+    }
+    .headline-small {
+        @apply font-semibold text-[24px] leading-8;
+    }
+
+    .title-large {
+        @apply font-medium text-[18px] leading-7;
+    }
+    .title-medium {
+        @apply font-medium text-[16px] leading-6;
+    }
+    .title-small {
+        @apply font-medium text-[14px] leading-5;
+    }
+
+    .label-large {
+        @apply font-medium text-[14px] leading-5;
+    }
+    .label-medium {
+        @apply font-medium text-[12px] leading-4;
+    }
+    .label-small {
+        @apply font-medium text-[11px] leading-4;
+    }
+
+    .body-large {
+        @apply font-normal text-[18px] leading-6;
+    }
+    .body-medium {
+        @apply font-normal text-[14px] leading-5;
+    }
+    .body-small {
+        @apply font-normal text-[12px] leading-4;
+    }
+
+    .font-Arimo {
+        font-family: 'Arimo', Roboto, sans-serif;
+    }
+
+    .custom-text-highlight {
+        @apply bg-gradient-to-r from-[#ffc330] via-[#f47a53] to-[#793bdf] text-transparent bg-clip-text;
+    }
+
+    .custom-bg-highlight {
+        @apply bg-gradient-to-r from-[#ffc330] via-[#f47a53] to-[#793bdf];
+    }
+}
