@@ -4,7 +4,7 @@ import {Button} from "@/components/ui/Button.tsx";
 
 export const Footer: FC = () => {
   return (
-    <footer className={cn("bg-black text-white px-6 py-10")}>
+    <footer className={cn("bg-black text-white px-6 py-4")}>
       <div className={cn("max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-base font-Arimo")}>
 
         {/* Left */}

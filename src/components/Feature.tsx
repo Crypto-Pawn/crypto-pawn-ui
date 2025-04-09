@@ -10,7 +10,7 @@ export const Feature: FC = () => {
   ];
 
   return (
-    <section className={cn("bg-black text-white px-6 font-Arimo")}>
+    <section className={cn("bg-black text-white px-6 py-2 ")}>
       <div className={cn("max-w-screen-xl mx-auto")}>
         <h2 className={cn("text-lg font-semibold mb-6")}>FEATURE ON</h2>
         <div

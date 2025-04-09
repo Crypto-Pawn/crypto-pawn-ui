@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/Button";
 
 export const Hero: FC = () => {
   return (
-    <section className={cn("bg-black text-white px-6 font-Arimo")}>
+    <section className={cn("bg-black text-white px-6 py-2 font-Arimo")}>
       <div className={cn("max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center")}>
 
         {/* Left content */}
@@ -27,7 +27,7 @@ export const Hero: FC = () => {
             <Button
               variant="ghost"
               className={cn(
-                "px-10 py-2 text-base",
+                "px-10 py-2 text-base border-2 border-zinc-800",
                 "text-zinc-100 hover:text-purple-600")}
             >
               My NFTs
