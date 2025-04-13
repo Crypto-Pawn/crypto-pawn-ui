@@ -4,6 +4,7 @@ import { cn } from "@/libs/style";
 import { Button } from "./ui/Button";
 import { Input } from "@/components/ui/Input.tsx";
 import {useNavigate} from "@tanstack/react-router";
+import {LoginButton} from "@/components/LoginButton.tsx";
 
 export const Header: FC = () => {
   const navigate = useNavigate();
@@ -61,8 +62,9 @@ export const Header: FC = () => {
             />
           </div>
           <Button variant="purple" size="lg" className={cn(
-            "px-5 py-2 text-base",
+            "px-8 py-2 text-base",
             "hover:text-purple-600")}>Connect Wallet</Button>
+          <LoginButton/>
         </div>
       </div>
     </header>
