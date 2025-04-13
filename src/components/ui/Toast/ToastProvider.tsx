@@ -41,7 +41,7 @@ export const ToastProvider = ({ children }: PropsWithChildren) => {
       {
         !!messages?.length && (
           <div className="fixed top-0 left-0 flex justify-center w-full z-999">
-            <div className="fixed sm:top-8 sm:right-6 max-w-screen-sm w-full px-4 bottom-4 right-0 h-fit">
+            <div className="fixed sm:bottom-8 sm:right-6 max-w-screen-sm w-full px-4 bottom-4 right-0 h-fit">
               { messages.map((message) => (
                 <Toast
                   key={ message.id }

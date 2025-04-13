@@ -6,7 +6,7 @@ import {
   useMemo,
   ReactNode,
 } from 'react';
-import { useAccount, useSignMessage, useDisconnect } from 'wagmi';
+import { useAccount, useSignMessage } from 'wagmi';
 import { recoverMessageAddress } from 'viem';
 
 type AuthContextType = {
@@ -26,31 +26,33 @@ const AUTH_KEY = 'crypto-pawn-authenticated';
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { address } = useAccount();
   const { signMessageAsync } = useSignMessage();
-  const { disconnect } = useDisconnect();
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return localStorage.getItem(AUTH_KEY) === 'true';
   });
 
   const login = async () => {
+    if (!address) throw new Error('Wallet not connected');
+
     const nonce = `Sign this message to login: ${Math.floor(Math.random() * 1_000_000)}`;
     const signature = await signMessageAsync({ message: nonce });
     const recovered = await recoverMessageAddress({ message: nonce, signature });
 
-    if (recovered.toLowerCase() === address?.toLowerCase()) {
-      setIsAuthenticated(true);
-      localStorage.setItem(AUTH_KEY, 'true');
-    } else {
-      setIsAuthenticated(false);
+    if (recovered.toLowerCase() !== address.toLowerCase()) {
       throw new Error('Signature mismatch');
     }
+    setIsAuthenticated(true);
+    localStorage.setItem(AUTH_KEY, 'true');
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem(AUTH_KEY);
-    disconnect();
+
+    // Force reload so wagmi re-checks connection
+    window.location.reload();
   };
+
 
   useEffect(() => {
     if (!address) {

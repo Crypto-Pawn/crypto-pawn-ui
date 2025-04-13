@@ -61,9 +61,6 @@ export const Header: FC = () => {
               )}
             />
           </div>
-          <Button variant="purple" size="lg" className={cn(
-            "px-8 py-2 text-base",
-            "hover:text-purple-600")}>Connect Wallet</Button>
           <LoginButton/>
         </div>
       </div>

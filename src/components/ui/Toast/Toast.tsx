@@ -27,7 +27,7 @@ export const Toast: React.FunctionComponent<Props> = ({
       case 'danger':
         return 'bg-red-900';
       case 'success':
-        return 'bg-greenNormal';
+        return 'bg-green-900';
       case 'warning':
         return 'bg-amber-900';
       default:
