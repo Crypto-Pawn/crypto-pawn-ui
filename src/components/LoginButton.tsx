@@ -9,8 +9,9 @@ import { useStoreProvider } from '@/store/StoreProvider';
 import { getState } from '@/store/reducer';
 import { isMobileDevice, isMetaMaskWebView } from '@/utils/common';
 import {cn} from "@/libs/style.ts";
+import {switchOrAddNetwork} from "@/utils/wallet.ts";
 
-export const LoginButton: React.FC = () => {
+export const LoginButton = () => {
   const toast = useToast();
   const isMobile = isMobileDevice();
   const isMetaMaskWV = isMetaMaskWebView();
@@ -47,6 +48,7 @@ export const LoginButton: React.FC = () => {
 
       await login();
       toast.push('Logged in successfully ✅', 'success');
+      await switchOrAddNetwork();
     } catch (error: any) {
       const msg = error?.message || 'Login failed';
       toast.push(msg, 'danger');
@@ -61,7 +63,7 @@ export const LoginButton: React.FC = () => {
     return (
       <>
         <Button variant="purple" size="lg" className={cn(
-          "px-8 py-2 text-base",
+          "px-8 py-2 text-base gap-2",
           "hover:text-purple-600")}>
           <Wallet />
           <span>{formatAddress(address ?? '')}</span>

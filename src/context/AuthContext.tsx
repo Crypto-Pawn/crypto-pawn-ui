@@ -7,7 +7,7 @@ import {
   ReactNode,
 } from 'react';
 import { useAccount, useSignMessage } from 'wagmi';
-import { recoverMessageAddress } from 'viem';
+import {keccak256, recoverMessageAddress, toBytes} from 'viem';
 
 type AuthContextType = {
   login: () => Promise<void>;
@@ -34,13 +34,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async () => {
     if (!address) throw new Error('Wallet not connected');
 
-    const nonce = `Sign this message to login: ${Math.floor(Math.random() * 1_000_000)}`;
+    const timestamp = Date.now();
+    const raw = `crypto-pawn-login:${address}:${timestamp}`;
+    const hashedNonce = keccak256(toBytes(raw));
+    const nonce = `Login with this signature: ${hashedNonce}`;
+
     const signature = await signMessageAsync({ message: nonce });
     const recovered = await recoverMessageAddress({ message: nonce, signature });
 
     if (recovered.toLowerCase() !== address.toLowerCase()) {
       throw new Error('Signature mismatch');
     }
+
     setIsAuthenticated(true);
     localStorage.setItem(AUTH_KEY, 'true');
   };
