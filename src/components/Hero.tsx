@@ -1,8 +1,8 @@
-import { FC } from "react";
 import { cn } from "@/libs/style";
 import { Button } from "@/components/ui/Button";
+import ButtonCreateLoan from "@/components/ButtonCreateLoan.tsx";
 
-export const Hero: FC = () => {
+export const Hero: React.FunctionComponent = () => {
   return (
     <section className={cn("bg-black text-white px-6 py-2 font-Arimo")}>
       <div className={cn("max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center")}>
@@ -16,14 +16,7 @@ export const Hero: FC = () => {
             Maximize your NFT’s potential with instant loans
           </p>
           <div className={cn("flex gap-4 pt-2")}>
-            <Button
-              variant="purple"
-              className={cn(
-                "px-10 py-2 text-base",
-                "hover:text-purple-600 ")}
-            >
-              Lend
-            </Button>
+            <ButtonCreateLoan />
             <Button
               variant="ghost"
               className={cn(

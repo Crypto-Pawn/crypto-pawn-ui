@@ -4,7 +4,6 @@ import { metaMask } from 'wagmi/connectors';
 import { bscTestnet } from 'wagmi/chains';
 import { PROVIDER_CHAIN_ID, PROVIDER_POLLING_INTERVAL } from '@/utils/config';
 
-
 // Localhost Hardhat Chain
 export const hardhatChain = defineChain({
   id: 31337,
@@ -40,7 +39,7 @@ export const wagmiConfig = createConfig({
   connectors: [metaMask()],
   transports: {
     [hardhatChain.id]: http(),
-    // [bscTestnetChain.id]: http(),
+    [bscTestnetChain.id]: http(),
   },
   pollingInterval: PROVIDER_POLLING_INTERVAL,
   ssr: false,
