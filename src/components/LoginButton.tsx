@@ -8,8 +8,8 @@ import { useAuthContext } from '@/context/AuthContext';
 import { useStoreProvider } from '@/store/StoreProvider';
 import { getState } from '@/store/reducer';
 import { isMobileDevice, isMetaMaskWebView } from '@/utils/common';
-import {cn} from "@/libs/style.ts";
-import {switchOrAddNetwork} from "@/utils/wallet.ts";
+import {cn} from '@/libs/style.ts';
+import {switchOrAddNetwork} from '@/utils/wallet.ts';
 
 export const LoginButton = () => {
   const toast = useToast();
@@ -63,8 +63,8 @@ export const LoginButton = () => {
     return (
       <>
         <Button variant="purple" size="lg" className={cn(
-          "px-8 py-2 text-base gap-2",
-          "hover:text-purple-600")}>
+          'px-8 py-2 text-base gap-2',
+          'hover:text-purple-600')}>
           <Wallet />
           <span>{formatAddress(address ?? '')}</span>
         </Button>
@@ -85,8 +85,8 @@ export const LoginButton = () => {
               key={connector.uid}
               onClick={() => handleLogin(connector)}
               variant="purple" size="lg" className={cn(
-              "px-8 py-2 text-base",
-              "hover:text-purple-600")}
+              'px-8 py-2 text-base',
+              'hover:text-purple-600')}
             >
               <Wallet />
               <span>Login</span>

@@ -50,9 +50,9 @@ Follow these steps to set up the project locally:
 
 Here are some useful scripts you can run:
 
-- **Start Development Server**: `npm start` or `yarn start`
-- **Build for Production**: `npm run build` or `yarn build`
-- **Run Tests**: `npm test` or `yarn test`
+- **Start Development Server**: `yarn start`
+- **Build for Production**: `yarn build`
+- **Run Tests**: `yarn test`
 
 ## License
 
@@ -60,5 +60,5 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-For questions or support, please contact [your-email@example.com].
+For questions or support, please contact [hoannguyenuet@gmail.com].
 

@@ -2,7 +2,8 @@ import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-// import { ethers } from 'ethers';
+import { ethers } from 'ethers';
+import { cryptoPawnCoreAbi } from '@/libs/contracts/morgage-token.ts';
 import {
   Form,
   FormField,
@@ -10,13 +11,12 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/Form';
-import { Button } from '@/components/ui/Button';
-import { Input } from './Input';
-// import ICryptoPawnCoreABI from '@/abis/ICryptoPawnCore.json';
+} from '@/components/ui/Form.tsx';
+import { Button } from '@/components/ui/Button.tsx';
+import { Input } from './ui/Input.tsx';
 
 const formSchema = z.object({
-  nftTokenId: z.number().min(1, 'NFT Token ID must be greater than 0'),
+  nftTokenId: z.string().min(1, 'NFT Token ID (address) is required'),
   nftContract: z.string().min(1, 'NFT Contract address is required'),
   principal: z.number().min(1, 'Principal must be greater than 0'),
   interest: z.number().min(1, 'Interest must be greater than 0'),
@@ -29,7 +29,7 @@ const FormCreateLoan: React.FunctionComponent<{ closeDialog: () => void }> = ({ 
   const form = useForm<FormCreateLoanInputs>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nftTokenId: 0,
+      nftTokenId: '',
       nftContract: '',
       principal: 0,
       interest: 0,
@@ -38,33 +38,32 @@ const FormCreateLoan: React.FunctionComponent<{ closeDialog: () => void }> = ({ 
   });
 
   const onSubmit: SubmitHandler<FormCreateLoanInputs> = async data => {
-    // try {
-    //   // Connect to Ethereum provider
-    //   const provider = new ethers.providers.Web3Provider(window.ethereum);
-    //   const signer = provider.getSigner();
-    //
-    //   // Contract instance
-    //   const contractAddress = '0xYourContractAddressHere'; // Replace with your contract address
-    //   const contract = new ethers.Contract(contractAddress, ICryptoPawnCoreABI, signer);
-    //
-    //   // Call createOffer function
-    //   const tx = await contract.createOffer(
-    //     data.nftTokenId,
-    //     data.nftContract,
-    //     ethers.
-    //     utils.parseEther(data.principal.toString()),
-    //     ethers.utils.parseEther(data.interest.toString()),
-    //     data.duration
-    //   );
-    //
-    //   // Wait for transaction to be mined
-    //   await tx.wait();
-    //
-    //   console.log('Offer created successfully:', tx);
-    //   closeDialog();
-    // } catch (error) {
-    //   console.error('Error creating offer:', error);
-    // }
+    try {
+      // Connect to Ethereum provider
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      // Contract instance
+      const contractAddress = '0xYourContractAddressHere'; // Replace with your contract address
+      const contract = new ethers.Contract(contractAddress, cryptoPawnCoreAbi, signer);
+
+      // Call createOffer function
+      const tx = await contract.createOffer(
+        data.nftTokenId,
+        data.nftContract,
+        ethers.parseEther(data.principal.toString()),
+        ethers.parseEther(data.interest.toString()),
+        data.duration
+      );
+
+      // Wait for transaction to be mined
+      await tx.wait();
+
+      console.log('Offer created successfully:', tx);
+      closeDialog();
+    } catch (error) {
+      console.error('Error creating offer:', error);
+    }
   };
 
   return (
@@ -76,9 +75,9 @@ const FormCreateLoan: React.FunctionComponent<{ closeDialog: () => void }> = ({ 
           name="nftTokenId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel isRequired>NFT Token ID</FormLabel>
+              <FormLabel isRequired>NFT Token ID (Address)</FormLabel>
               <FormControl>
-                <Input type="number" {...field} />
+                <Input type="text" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

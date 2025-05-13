@@ -1,8 +1,8 @@
-import {cn} from "@/libs/style.ts";
-import {Button} from "@/components/ui/Button.tsx";
-import {useState} from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import FormCreateLoan from "./ui/FormCreateLoan";
+import {cn} from '@/libs/style.ts';
+import {Button} from '@/components/ui/Button.tsx';
+import {useState} from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import FormCreateLoan from './FormCreateLoan.tsx';
 
 const ButtonCreateLoan: React.FunctionComponent = () => {
   const [open, setOpen] = useState(false);
@@ -13,8 +13,7 @@ const ButtonCreateLoan: React.FunctionComponent = () => {
           <Button
             variant="purple"
             className={cn(
-              "text-base",
-              "hover:text-purple-600 ")}
+              'text-base hover:text-purple-600 ')}
           >
             Create a Loan
           </Button>
@@ -27,6 +26,6 @@ const ButtonCreateLoan: React.FunctionComponent = () => {
         </DialogContent>
       </Dialog>
     </>
-  )
-}
+  );
+};
 export default ButtonCreateLoan;
