@@ -1,17 +1,27 @@
-export const switchOrAddNetwork = async () => {
-    const chainIdHex = '0x7A69'; // 31337 in hex
+import { CHAIN_CONFIGS } from '@/utils/config';
+import { env } from '@/utils/config';
 
-    const hardhatParams = {
-        chainId: chainIdHex,
-        chainName: 'Hardhat Local',
-        nativeCurrency: {
-            name: 'Hardhat ETH',
-            symbol: 'ETH',
-            decimals: 18,
-        },
-        rpcUrls: ['http://127.0.0.1:8545'],
-        blockExplorerUrls: ['http://localhost:8545'],
+// Type declarations for window.ethereum
+declare global {
+  interface Window {
+    ethereum?: {
+      request: (args: { method: string; params?: any[] }) => Promise<any>;
+      isMetaMask?: boolean;
     };
+  }
+}
+
+export const switchOrAddNetwork = async (chainId = env.providerChainId) => {
+    if (!window.ethereum) {
+        throw new Error('MetaMask not installed');
+    }
+    
+    const chainConfig = CHAIN_CONFIGS[chainId];
+    if (!chainConfig) {
+        throw new Error(`Chain configuration not found for ID: ${chainId}`);
+    }
+
+    const chainIdHex = `0x${chainId.toString(16)}`;
 
     try {
         await window.ethereum.request({
@@ -23,7 +33,13 @@ export const switchOrAddNetwork = async () => {
             try {
                 await window.ethereum.request({
                     method: 'wallet_addEthereumChain',
-                    params: [hardhatParams],
+                    params: [{
+                        chainId: chainIdHex,
+                        chainName: chainConfig.name,
+                        nativeCurrency: chainConfig.currency,
+                        rpcUrls: chainConfig.rpcUrls,
+                        blockExplorerUrls: chainConfig.blockExplorerUrls,
+                    }],
                 });
             } catch (addError) {
                 console.warn('Add chain failed:', addError);
@@ -32,4 +48,9 @@ export const switchOrAddNetwork = async () => {
             console.warn('Switch chain failed:', switchError);
         }
     }
+};
+
+// Export useful helper functions
+export const isMetaMaskInstalled = (): boolean => {
+    return window.ethereum?.isMetaMask === true;
 };

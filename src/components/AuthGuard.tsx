@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useAuthContext } from '@/context/AuthContext';
-import { cn } from "@/libs/style.ts";
+import { cn } from '@/libs/style.ts';
 import { useNavigate } from '@tanstack/react-router';
 
 type AuthGuardProps = {
@@ -25,7 +25,7 @@ export const AuthGuard = ({ children, redirectTo = '/' }: AuthGuardProps) => {
 
   if (!isAuthenticated) {
     return (
-      <section className={cn("bg-black text-white px-6 py-12 font-Arimo")}>
+      <section className={cn('bg-black text-white px-6 py-12 font-Arimo')}>
         <div className="p-4 space-y-4">
           <div className="flex items-center">
             <div className="mr-4 text-3xl">🔒</div>

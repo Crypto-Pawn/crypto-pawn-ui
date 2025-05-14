@@ -80,6 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Enhanced login with better error handling and return value
   const login = async (): Promise<boolean> => {
     try {
+      if (!address) throw new Error('Wallet not connected');
 
       const timestamp = Date.now();
       const raw = `${STORAGE_PREFIX}-login:${address}:${timestamp}`;

@@ -1,6 +1,6 @@
-import { Feature } from '@/components/Feature'
-import { Hero } from '@/components/Hero'
-import { createFileRoute } from '@tanstack/react-router'
+import { Feature } from '@/components/Feature';
+import { Hero } from '@/components/Hero';
+import { createFileRoute } from '@tanstack/react-router';
 
 function Index() {
   return (
@@ -8,8 +8,8 @@ function Index() {
       <Hero />
       <Feature />
     </div>
-  )
+  );
 }
 export const Route = createFileRoute('/')({
   component: Index,
-})
+});

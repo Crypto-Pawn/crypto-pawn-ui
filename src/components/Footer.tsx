@@ -1,11 +1,11 @@
-import { FC } from "react";
-import {cn} from "@/libs/style.ts";
-import {Button} from "@/components/ui/Button.tsx";
+import { FC } from 'react';
+import {cn} from '@/libs/style.ts';
+import {Button} from '@/components/ui/Button.tsx';
 
 export const Footer: FC = () => {
   return (
-    <footer className={cn("bg-black text-white px-6 py-4")}>
-      <div className={cn("max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-base font-Arimo")}>
+    <footer className={cn('bg-black text-white px-6 py-4')}>
+      <div className={cn('max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-base font-Arimo')}>
 
         {/* Left */}
         <div>
@@ -31,8 +31,8 @@ export const Footer: FC = () => {
         <div>
           <h3 className="text-xl font-bold mb-3">NEED HELP?</h3>
           <Button className={cn(
-            "flex items-center gap-3 px-5 py-3 rounded-md",
-            "bg-zinc-800 text-white hover:bg-zinc-700 text-base font-medium"
+            'flex items-center gap-3 px-5 py-3 rounded-md',
+            'bg-zinc-800 text-white hover:bg-zinc-700 text-base font-medium'
           )}>
             📩 Contact Support
           </Button>

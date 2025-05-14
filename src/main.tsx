@@ -4,11 +4,11 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import {App} from './App';
 import {QueryClientProvider} from '@tanstack/react-query';
-import {queryClient} from "./libs/query.ts";
-import {ToastProvider} from "@/components/ui/Toast";
+import {queryClient} from './libs/query.ts';
+import {ToastProvider} from '@/components/ui/Toast';
 import {AuthProvider} from './context/AuthContext.tsx';
-import {WagmiProvider} from "wagmi";
-import {wagmiConfig} from "@/config/wagmi.ts";
+import {WagmiProvider} from 'wagmi';
+import {wagmiConfig} from '@/config/wagmi.ts';
 import {StoreProvider} from './store/StoreProvider.tsx';
 
 scan({enabled: false});
