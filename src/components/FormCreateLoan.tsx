@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ethers } from 'ethers';
-import { cryptoPawnCoreAbi } from '@/libs/contracts/morgage-token.ts';
+// import { cryptoPawnCoreAbi } from '@/libs/contracts/morgage-token.ts';
 import {
   Form,
   FormField,
@@ -40,6 +40,9 @@ const FormCreateLoan: React.FunctionComponent<{ closeDialog: () => void }> = ({ 
   const onSubmit: SubmitHandler<FormCreateLoanInputs> = async data => {
     try {
       // Connect to Ethereum provider
+      if (!window.ethereum) {
+        throw new Error('Ethereum provider is not available');
+      }
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
