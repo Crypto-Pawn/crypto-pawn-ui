@@ -9,12 +9,12 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, wrapperClassName, icon, children, ...props }, ref) => {
     return (
-      <div className={cn("flex items-center gap-2 bg-[#1E2329] border border-[#282D36] rounded-lg p-2", wrapperClassName)}>
+      <div className={cn('flex items-center gap-2 bg-[#1E2329] border border-[#282D36] rounded-lg p-2', wrapperClassName)}>
         {icon && <div className="flex-shrink-0 text-gray-400">{icon}</div>}
         <select
           ref={ref}
           className={cn(
-            "bg-transparent text-gray-200 outline-none w-full",
+            'bg-transparent text-gray-200 outline-none w-full',
             className
           )}
           {...props}

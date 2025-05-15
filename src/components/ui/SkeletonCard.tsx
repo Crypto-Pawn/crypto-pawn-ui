@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { cn } from '@/libs/style.ts';
 
-interface SkeletonCardProps extends React.HTMLAttributes<HTMLDivElement> {}
+type SkeletonCardProps = React.HTMLAttributes<HTMLDivElement>
 
 const SkeletonCard = React.forwardRef<HTMLDivElement, SkeletonCardProps>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        "bg-[#1E2329] border border-[#282D36] rounded-xl overflow-hidden animate-pulse",
+        'bg-[#1E2329] border border-[#282D36] rounded-xl overflow-hidden animate-pulse',
         className
       )}
       {...props}

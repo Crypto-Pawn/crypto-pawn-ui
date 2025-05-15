@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ethers } from 'ethers';
+import { ethers, isAddress} from 'ethers';
 import { abi as mortgageTokenAbi, address as mortgageTokenAddress } from '@/libs/contracts/abis/MortgageToken.json';
 import {
   Form,
@@ -59,7 +59,43 @@ const FormCreateLoan: React.FunctionComponent<{ closeDialog: () => void }> = ({ 
       }
 
       const contract = new ethers.Contract(mortgageTokenAddress, mortgageTokenAbi, signer);
-      // await contract.setApprovalForAll(address, true);
+      
+      // Optionally, check if the NFT contract implements ERC721
+      const nftContract = new ethers.Contract(data.nftContract, [
+        'function ownerOf(uint256 tokenId) external view returns (address)',
+        'function approve(address to, uint256 tokenId) external',
+      ], signer);
+
+      try {
+        // Try fetching the owner of tokenId to ensure it's an ERC721 contract
+        await nftContract.ownerOf(data.nftTokenId);
+        console.log('NFT contract is valid');
+      } catch (nftError) {
+        console.error('Invalid NFT contract:', nftError);
+        toast.push('Invalid NFT contract address', 'danger');
+        return;
+      }
+
+      // Validate data
+      if (!isAddress(data.nftContract)) {
+        toast.push('Invalid NFT contract address format', 'danger');
+        return;
+      }
+      if (data.principal <= 0) {
+        toast.push('Principal must be greater than 0', 'danger');
+        return;
+      }
+
+      // Make nft contract approve borrower
+      try {
+        const txApprove = await nftContract.approve(mortgageTokenAddress, data.nftTokenId);
+        await txApprove.wait();
+        console.log('NFT approved successfully:', txApprove);
+      } catch (approveError) {
+        console.error('Error approving NFT:', approveError);
+        toast.push('NFT approval failed', 'danger');
+        return;
+      }
 
       const tx = await contract.createLoan(
         data.nftTokenId,

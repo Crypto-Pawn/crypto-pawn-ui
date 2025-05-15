@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useReadContract } from 'wagmi';
+import { useReadContract, useAccount, useWriteContract } from 'wagmi';
 import MortgageTokenABI from '@/libs/contracts/abis/MortgageToken.json';
+import CryptoPawnTokenABI from '@/libs/contracts/abis/CryptoPawnToken.json';
 import { cn } from '@/libs/style';
 import { createFileRoute } from '@tanstack/react-router';
-import { Clock, ArrowUpDown, RefreshCcw } from 'lucide-react';
+import { Clock, RefreshCcw } from 'lucide-react';
 import { formatAddress } from '@/utils';
 
 // Import components from the main components folder 
 import { Button } from '@/components/ui/Button';
-import { SearchInput } from '@/components/SearchInput';
-import { Select } from '@/components/Select';
-import { Card, CardHeader, CardContent, CardFooter, CardTitle } from '@/components/Card';
 import { Badge } from '@/components/Badge';
-import { SkeletonCard } from '@/components/SkeletonCard';
-import { EmptyState } from '@/components/EmptyState';
+import { SkeletonCard } from '@/components/ui/SkeletonCard';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { AuthGuard } from '@/components/AuthGuard';
+import { cryptoPawnTokenAddress } from '@/libs/contracts/crypto-pawn-token';
+import { ethers } from 'ethers';
 
 // Helper function to safely convert BigInt values
 const formatBigInt = (value: unknown): number | string => {
@@ -32,7 +34,7 @@ const formatBigInt = (value: unknown): number | string => {
 type Mortgage = {
   id: string | number;
   nftTokenId: string | number;
-  principal: string | number;
+  principal: number;
   interest: string | number;
   duration: string | number;
   startTime: string | number;
@@ -49,8 +51,14 @@ export const Route = createFileRoute('/explore')({
 function Explore() {
   const [mortgages, setMortgages] = useState<Mortgage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [sortBy, setSortBy] = useState<'newest' | 'principal'>('newest');
+  const [cancelingLoanId, setCancelingLoanId] = useState<string | null>(null);
+  const [lendingLoanId, setLendingLoanId] = useState<string | null>(null);
+  
+  // Get the current wallet address
+  const { address } = useAccount();
+  
+  // Setup contract write functionality for cancel operation
+  const { writeContractAsync, isPending } = useWriteContract();
 
   const { data: mortgageData, isSuccess, refetch } = useReadContract({
     address: MortgageTokenABI.address as `0x${string}`,
@@ -68,7 +76,7 @@ function Explore() {
         const processedData = (mortgageData as any[]).map(mortgage => ({
           id: formatBigInt(mortgage.id),
           nftTokenId: formatBigInt(mortgage.nftTokenId),
-          principal: formatBigInt(mortgage.principal),
+          principal: mortgage.principal,
           interest: formatBigInt(mortgage.interest),
           duration: formatBigInt(mortgage.duration),
           startTime: formatBigInt(mortgage.startTime),
@@ -102,12 +110,62 @@ function Explore() {
     });
   };
 
+  const handleCancelLoan = async (mortgageId: string | number) => {
+    try {
+      setCancelingLoanId(String(mortgageId));
+      
+      await writeContractAsync({
+        address: MortgageTokenABI.address as `0x${string}`,
+        abi: MortgageTokenABI.abi,
+        functionName: 'cancel',
+        args: [BigInt(mortgageId)],
+      });
+      
+      // Refresh the list after cancellation
+      handleRefresh();
+    } catch (error) {
+      console.error('Error canceling loan:', error);
+    } finally {
+      setCancelingLoanId(null);
+    }
+  };
+  
+  // Handler for lending
+  const handleLend = async (mortgageId: string | number, p: number) => {
+    try {
+      setLendingLoanId(String(mortgageId));
+
+      // First, approve token transfer for the mortgage contract
+      await writeContractAsync({
+        address: cryptoPawnTokenAddress as `0x${string}`, // CryptoPawnToken address
+        abi: CryptoPawnTokenABI.abi,
+        functionName: 'approve',
+        args: [MortgageTokenABI.address, ethers.parseEther(p.toString())],
+      });
+
+      // Now call lend function
+      await writeContractAsync({
+        address: MortgageTokenABI.address as `0x${string}`,
+        abi: MortgageTokenABI.abi,
+        functionName: 'lend',
+        args: [BigInt(mortgageId)],
+      });
+      
+      // Refresh the list after lending
+      handleRefresh();
+    } catch (error) {
+      console.error('Error lending:', error);
+    } finally {
+      setLendingLoanId(null);
+    }
+  };
+
   const getStateLabel = (state: number): string => {
     const stateLabels = ['PENDING', 'CANCELLED', 'SUPPLIED', 'REPAID', 'FORECLOSED'];
     return stateLabels[state] || 'UNKNOWN';
   };
 
-  const getStateBadgeVariant = (state: number): "default" | "primary" | "success" | "warning" | "danger" | "info" => {
+  const getStateBadgeVariant = (state: number): 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info' => {
     const variantMap = [
       'warning', // PENDING
       'danger',  // CANCELLED
@@ -118,34 +176,12 @@ function Explore() {
     return (variantMap[state] || 'default') as any;
   };
 
-  // Generate a placeholder image for the NFT based on its ID
-  const getNftImage = (id: string | number, tokenId: string | number): string => {
-    return `https://source.unsplash.com/random/300x300/?nft,art,${Number(id) + Number(tokenId)}`;
-  };
-
-  // Apply search and sorting only (filtering removed)
-  const filteredMortgages = mortgages.filter(mortgage => {
-    // Filter by search query (ID, borrower, lender)
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      return String(mortgage.id).includes(query) || 
-             mortgage.borrower.toLowerCase().includes(query) ||
-             (mortgage.lender && mortgage.lender.toLowerCase().includes(query));
-    }
-    return true;
-  }).sort((a, b) => {
-    if (sortBy === 'newest') {
-      return Number(b.id) - Number(a.id);
-    } else {
-      // Convert to numbers for comparison, or use 0 if conversion fails
-      const principalA = typeof a.principal === 'string' ? parseFloat(a.principal) || 0 : a.principal;
-      const principalB = typeof b.principal === 'string' ? parseFloat(b.principal) || 0 : b.principal;
-      return principalB - principalA;
-    }
-  });
+  // Sort mortgages by newest first (highest ID)
+  const sortedMortgages = [...mortgages].sort((a, b) => Number(b.id) - Number(a.id));
 
   return (
-    <section className="min-h-screen bg-[#0F1318] text-white px-6 py-12">
+    <AuthGuard>
+      <section className="min-h-screen bg-[#0F1318] text-white px-6 py-12">
       <div className="max-w-screen-xl mx-auto space-y-10">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -168,29 +204,9 @@ function Explore() {
           </Button>
         </div>
 
-        {/* Search and sorting only */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <SearchInput
-            placeholder="Search by ID, borrower or lender..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            wrapperClassName="w-full sm:max-w-xs"
-          />
-          
-          <Select
-            icon={<ArrowUpDown className="w-4 h-4" />}
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'newest' | 'principal')}
-            wrapperClassName="w-full sm:w-auto"
-          >
-            <option value="newest">Newest first</option>
-            <option value="principal">Highest amount</option>
-          </Select>
-        </div>
-
         {/* Results count */}
         <div className="flex items-center justify-between text-sm text-gray-400 border-b border-[#282D36] pb-2">
-          <span>{filteredMortgages.length} results</span>
+          <span>{mortgages.length} results</span>
           {isLoading && <span>Loading...</span>}
         </div>
 
@@ -201,15 +217,14 @@ function Explore() {
               <SkeletonCard key={index} />
             ))}
           </div>
-        ) : filteredMortgages.length > 0 ? (
+        ) : sortedMortgages.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
-            {filteredMortgages.map((mortgage) => (
+            {sortedMortgages.map((mortgage) => (
               <Card key={mortgage.id} className="hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]">
                 <CardHeader>
                   <img 
-                    src={getNftImage(mortgage.id, mortgage.nftTokenId)} 
+                    src="/src/assets/images/cryptoPawn.png" 
                     alt={`NFT #${mortgage.nftTokenId}`}
-                    className="w-full h-full object-cover"
                   />
                   <div className="absolute top-3 right-3">
                     <Badge variant={getStateBadgeVariant(mortgage.state)}>
@@ -245,11 +260,24 @@ function Explore() {
 
                   <CardFooter>
                     {mortgage.state === 0 ? (
-                      <Button 
-                        className="w-full bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white"
-                      >
-                        Lend Now
-                      </Button>
+                      address && address.toLowerCase() === mortgage.borrower?.toLowerCase() ? (
+                        <Button 
+                          className="w-full bg-red-600 hover:bg-red-700 text-white"
+                          onClick={() => handleCancelLoan(mortgage.id)}
+                          disabled={isPending && cancelingLoanId === String(mortgage.id)}
+                        >
+                          {isPending && cancelingLoanId === String(mortgage.id) ? 'Canceling...' : 'Cancel Loan'}
+                        </Button>
+                      ) : (
+                        <Button 
+                          className="w-full bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white"
+                          onClick={() => handleLend(mortgage.id, mortgage.principal)}
+                          disabled={!address || (isPending && lendingLoanId === String(mortgage.id))}
+                        >
+                          {!address ? 'Connect Wallet to Lend' : 
+                            isPending && lendingLoanId === String(mortgage.id) ? 'Processing...' : 'Lend Now'}
+                        </Button>
+                      )
                     ) : (
                       <div 
                         className="w-full py-2 rounded-lg bg-[#282D36] text-center text-sm text-gray-400"
@@ -268,13 +296,12 @@ function Explore() {
         ) : (
           <EmptyState
             title="No loans found"
-            message={searchQuery 
-              ? 'Try adjusting your search query' 
-              : 'There are currently no active loan listings. Check back later or create a loan yourself.'}
+            message="There are currently no active loan listings. Check back later or create a loan yourself."
           />
         )}
       </div>
     </section>
+    </AuthGuard>
   );
 }
 
