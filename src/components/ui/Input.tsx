@@ -18,7 +18,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     };
 
     return (
-      <div ref={ref} className={wrapperClassName}>
+      <div className={wrapperClassName}>
         <input
           type={type}
           className={cn(
@@ -26,7 +26,16 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             error ? 'border-red-500 focus:border-red-500' : '',
             className,
           )}
-          ref={inputRef}
+          ref={(node) => {
+            inputRef.current = node;
+            if (typeof ref === 'function') {
+              ref(node);
+            } else if (ref) {
+              if (node) {
+                (ref as React.MutableRefObject<HTMLInputElement>).current = node;
+              }
+            }
+          }}
           onFocus={onFocus}
           {...props}
         />

@@ -1,2 +1,2 @@
-export * from './ToastProvider.tsx';
-export * from './Toast.tsx';
+export * from './Toast';
+export * from './ToastProvider';

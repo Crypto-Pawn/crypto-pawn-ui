@@ -3,7 +3,7 @@ import { cn } from '@/libs/style.ts';
 import { AuthGuard } from '@/components/AuthGuard';
 import { TokenBalance } from '@/components/TokenBalance';
 import { useAccount, useBalance } from 'wagmi';
-import { formatAddress } from '@/utils';
+import { formatAddress2 } from '@/utils';
 import { formatUnits } from 'viem';
 import { useState, useEffect } from 'react';
 
@@ -54,7 +54,7 @@ function ProfilePage() {
               <div className="space-y-4">
                 <div>
                   <h3 className="text-lg text-zinc-400">Address</h3>
-                  <p className="text-xl font-mono">{formatAddress(address || '')}</p>
+                  <p className="text-xl font-mono">{formatAddress2(address || '')}</p>
                 </div>
                 
                 {/* ETH Balance */}
